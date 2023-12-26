@@ -5,9 +5,13 @@ namespace App\Http\Controllers\admin;
 use App\Models\Brand;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\TempImages;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class ProductController extends Controller
 {
@@ -16,13 +20,12 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $products = Product::latest();
-
+        $products = Product::latest('id');
         if (!empty($request->get('keyword'))) {
-            $products = $products->where('name', 'like', '%' . $request->get('keyword') . '%');
+            $products = $products->where('title', 'like', '%' . $request->get('keyword') . '%');
         }
+        $products = $products->with('product_images')->paginate(4);
 
-        $products = $products->paginate(10);
         return view('admin.products.list', compact('products'));
     }
 
@@ -45,7 +48,7 @@ class ProductController extends Controller
             'title' => 'required',
             'slug' => 'required|unique:products',
             'price' => 'required|numeric',
-            'sku' => 'required',
+            'sku' => 'required|unique:products',
             'track_qty' => 'required|in:Yes,No',
             'category' => 'required|numeric',
             'is_featured' => 'required|in:Yes,No',
@@ -75,6 +78,37 @@ class ProductController extends Controller
             $product->is_featured = $request->is_featured;
             $product->save();
 
+            //Save gallery pics
+            if (!empty($request->image_array)) {
+                foreach ($request->image_array as $temp_image_id) {
+                    $tempImageInfo = TempImages::find($temp_image_id);
+                    $extArray = explode('.', $tempImageInfo->name);
+                    $ext = last($extArray); // like jpg,gif, png etc
+                    $productImage = new ProductImage();
+                    $productImage->product_id = $product->id;
+                    $productImage->image = 'NULL';
+                    $productImage->save();
+                    $imageName = $product->id . '-' . $productImage->id . '-' . time() . '.' . $ext;
+                    $productImage->image = $imageName;
+                    $productImage->save();
+
+                    // Generate Product Thumbnails
+                    // Large Image
+                    $sPath = public_path() . '/temp/' . $tempImageInfo->name;
+                    $dPath = public_path() . '/uploads/product/large/' . $imageName;
+                    $manager = new ImageManager(Driver::class);
+                    $image = $manager->read($sPath);
+                    $image->scale(height: 1400);
+                    $image->toPng()->save($dPath);
+
+                    // Small Image
+                    $dPath = public_path() . '/uploads/product/small/' . $imageName;
+                    $manager = new ImageManager(Driver::class);
+                    $image = $manager->read($sPath);
+                    $image->cover(300, 300);
+                    $image->toPng()->save($dPath);
+                }
+            }
             session()->flash('success', 'Product Added Successfully');
 
             return response()->json([
@@ -116,8 +150,25 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy(string $id)
     {
-        //
+        $product = Product::find($id);
+
+        if (empty($product)) {
+            session()->flash('error', 'Product Not found');
+            return response()->json([
+                'status' => true,
+                'message' => 'Product Not found'
+            ]);
+        }
+
+        $product->delete();
+
+        session()->flash('success', 'Product Deleted Successfully');
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Product Deleted Successfully'
+        ]);
     }
 }
