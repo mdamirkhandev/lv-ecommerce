@@ -8,6 +8,7 @@ use App\Http\Controllers\admin\CategoryController;
 use App\Http\Controllers\admin\AdminLoginController;
 use App\Http\Controllers\admin\BrandController;
 use App\Http\Controllers\admin\ProductController;
+use App\Http\Controllers\admin\ProductImageController;
 use App\Http\Controllers\admin\ProductSubCatController;
 use App\Http\Controllers\admin\SubCategoryController;
 use App\Http\Controllers\admin\TempImagesController;
@@ -48,8 +49,11 @@ Route::group(['prefix' => 'admin'], function () {
         Route::resource('/brands', BrandController::class);
         //Products Routes
         Route::resource('/products', ProductController::class);
-        //Products Routes
+        //Products sub cate Routes
         Route::get('/product-sub-cat', [ProductSubCatController::class, 'index'])->name('admin.productSubCat');
+        //Product Images
+        Route::post('/product-images/update', [ProductImageController::class, 'update'])->name('admin.product-images.update');
+        Route::delete('/product-images', [ProductImageController::class, 'destroy'])->name('admin.product-images.delete');
         //create category slug
         Route::get('/getSlug', function (Request $request) {
             $slug = '';

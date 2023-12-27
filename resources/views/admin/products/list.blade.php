@@ -145,7 +145,9 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(res) {
-                        if (res['status']) {
+                        if (res['status'] == true) {
+                            window.location.href = "{{ route('products.index') }}";
+                        } else {
                             window.location.href = "{{ route('products.index') }}";
                         }
                     }

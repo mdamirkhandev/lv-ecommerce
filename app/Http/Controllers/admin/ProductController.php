@@ -9,6 +9,8 @@ use App\Models\TempImages;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\SubCategory;
+use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -134,17 +136,77 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product $product)
+    public function edit($id, Request $request)
     {
-        //
+        $product = Product::find($id);
+
+        if (empty($product)) {
+            return redirect()->route('products.index')->with('error', 'Product Not Found');
+        }
+
+        $categories = Category::orderBy('name')->get();
+
+        $subCategories = SubCategory::where('category_id', $product->category_id)->get();
+
+        $productImages = ProductImage::where('product_id', $product->id)->get();
+
+        $brands = Brand::orderBy('name')->get();
+
+        return view('admin.products.edit', compact('categories', 'subCategories', 'productImages', 'brands', 'product'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, $id)
     {
-        //
+        $product = Product::find($id);
+
+        $rules = [
+            'title' => 'required',
+            'slug' => 'required|unique:products,slug,' . $product->id . ',id',
+            'price' => 'required|numeric',
+            'sku' => 'required|unique:products,sku,' . $product->id . ',id',
+            'track_qty' => 'required|in:Yes,No',
+            'category' => 'required|numeric',
+            'is_featured' => 'required|in:Yes,No',
+        ];
+
+        if (!empty($request->track_qty) && $request->track_qty == 'Yes') {
+            $rules['qty'] = 'required|numeric';
+        }
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->passes()) {
+            $product->title = $request->title;
+            $product->slug = $request->slug;
+            $product->description = $request->description;
+            $product->price = $request->price;
+            $product->compare_price = $request->compare_price;
+            $product->sku = $request->sku;
+            $product->barcode = $request->barcode;
+            $product->track_qty = $request->track_qty;
+            $product->qty = $request->qty;
+            $product->status = $request->status;
+            $product->category_id = $request->category;
+            $product->sub_category_id = $request->sub_category;
+            $product->brand_id = $request->brand;
+            $product->is_featured = $request->is_featured;
+            $product->save();
+
+            session()->flash('success', 'Product Updated Successfully');
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Product Updated successfully'
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
     }
 
     /**
@@ -157,9 +219,18 @@ class ProductController extends Controller
         if (empty($product)) {
             session()->flash('error', 'Product Not found');
             return response()->json([
-                'status' => true,
+                'status' => false,
+                'notFound' => true,
                 'message' => 'Product Not found'
             ]);
+        }
+        $productImages = ProductImage::where('product_id', $id)->get();
+        if (!empty($productImages)) {
+            foreach ($productImages as $productImage) {
+                File::delete(public_path('uploads/product/small/' . $productImage->image));
+                File::delete(public_path('uploads/product/large/' . $productImage->image));
+            }
+            ProductImage::where('product_id', $id)->delete();
         }
 
         $product->delete();

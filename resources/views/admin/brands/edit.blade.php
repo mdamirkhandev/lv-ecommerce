@@ -137,7 +137,7 @@
             element = $(this);
             $('button[type=submit]').prop('disabled', true);
             $.ajax({
-                url: "{{ route('cat.getslug') }}",
+                url: "{{ route('getslug') }}",
                 type: 'get',
                 data: {
                     title: element.val()
