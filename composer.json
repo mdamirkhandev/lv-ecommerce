@@ -29,7 +29,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/helpers/helper.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -37,6 +40,7 @@
         }
     },
     "scripts": {
+        "l": "php artisan",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"

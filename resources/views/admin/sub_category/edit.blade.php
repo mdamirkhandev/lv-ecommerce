@@ -61,14 +61,24 @@
                                         </option>
                                     </select>
                                 </div>
-
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="showMenu">Show Menu</label>
+                                    <select class="form-control" name="showMenu" id="showMenu">
+                                        <option {{ $subCategory->showMenu == 'No' ? 'selected' : '' }} value="No">No
+                                        </option>
+                                        <option {{ $subCategory->showMenu == 'Yes' ? 'selected' : '' }} value="Yes">Yes
+                                        </option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="pb-5 pt-3">
                     <button type="submit" class="btn btn-primary">Update</button>
-                    <a href="subcategory.html" class="btn btn-outline-dark ml-3">Cancel</a>
+                    <a href="{{ route('sub-category.index') }}" class="btn btn-outline-dark ml-3">Cancel</a>
                 </div>
             </form>
         </div>

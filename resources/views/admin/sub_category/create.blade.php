@@ -59,6 +59,15 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="showMenu">Show Menu</label>
+                                    <select class="form-control" name="showMenu" id="showMenu">
+                                        <option value="No">No</option>
+                                        <option value="Yes">Yes</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -12,23 +12,15 @@ use App\Http\Controllers\admin\ProductImageController;
 use App\Http\Controllers\admin\ProductSubCatController;
 use App\Http\Controllers\admin\SubCategoryController;
 use App\Http\Controllers\admin\TempImagesController;
+use App\Http\Controllers\user\HomeController as UserHomeController;
+use App\Http\Controllers\user\ShopController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-
+Route::get('/', [UserHomeController::class, 'index'])->name('user.index');
+Route::get('/shop', [ShopController::class, 'index'])->name('user.shop');
 
 Route::group(['prefix' => 'admin'], function () {
     //guest
