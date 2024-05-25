@@ -7,7 +7,7 @@
     <meta name="description" content="" />
     <meta name="viewport"
         content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1, user-scalable=no" />
-
+        <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="HandheldFriendly" content="True" />
     <meta name="pinterest" content="nopin" />
 
@@ -35,6 +35,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('user-assets/css/slick.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('user-assets/css/slick-theme.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('user-assets/css/video-js.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('user-assets/css/ion.rangeSlider.min.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('user-assets/css/style.css') }}?v=<?php echo rand(111, 999); ?>" />
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">

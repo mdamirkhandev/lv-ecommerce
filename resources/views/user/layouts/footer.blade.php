@@ -56,7 +56,8 @@
 <script src="{{ asset('user-assets/js/lazyload.17.6.0.min.js') }}"></script>
 <script src="{{ asset('user-assets/js/slick.min.js') }}"></script>
 <script src="{{ asset('user-assets/js/custom.js') }}"></script>
-<script>
+<script src="{{ asset('user-assets/js/ion.rangeSlider.min.js') }}"></script>
+<script type="text/javascript">
     window.onscroll = function() {
         myFunction()
     };
@@ -71,7 +72,32 @@
             navbar.classList.remove("sticky");
         }
     }
+    //send csrf token to header
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    //add to cart product
+    function addToCart(id) {
+        $.ajax({
+            url: '{{ route('cart.store') }}',
+            type: 'post',
+            data: {
+                id: id
+            },
+            dataType: 'json',
+            success: function(res) {
+                if (res['status'] == true) {
+                    window.location.href = "{{ route('cart.index') }}";
+                } else {
+                    alert(res['message']);
+                }
+            }
+        })
+    }
 </script>
+@yield('customJS')
 </body>
 
 </html>

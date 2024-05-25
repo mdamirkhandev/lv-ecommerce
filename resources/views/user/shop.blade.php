@@ -5,7 +5,7 @@
             <div class="container">
                 <div class="light-font">
                     <ol class="breadcrumb primary-color mb-0">
-                        <li class="breadcrumb-item"><a class="white-text" href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a class="white-text" href="{{ route('user.index') }}">Home</a></li>
                         <li class="breadcrumb-item active">Shop</li>
                     </ol>
                 </div>
@@ -26,7 +26,7 @@
                                     @if ($categories->isNotEmpty())
                                         @foreach ($categories as $key => $category)
                                             <div class="accordion-item">
-                                                @if ($category->subCategory->isNotEmpty())
+                                                @if ($category->sub_category->isNotEmpty())
                                                     <h2 class="accordion-header" id="headingOne">
                                                         <button class="accordion-button collapsed" type="button"
                                                             data-bs-toggle="collapse"
@@ -37,17 +37,19 @@
                                                         </button>
                                                     </h2>
                                                 @else
-                                                    <a href="#" class="nav-item nav-link">{{ $category->name }}</a>
+                                                    <a href="{{ route('user.shop', $category->slug) }}"
+                                                        class="nav-item nav-link">{{ $category->name }}</a>
                                                 @endif
-                                                @if ($category->subCategory->isNotEmpty())
+                                                @if ($category->sub_category->isNotEmpty())
                                                     <div id="collapseOne-{{ $key }}"
-                                                        class="accordion-collapse collapse" aria-labelledby="headingOne"
-                                                        data-bs-parent="#accordionExample" style="">
+                                                        class="accordion-collapse collapse {{ $catSelected == $category->id ? 'show' : '' }}"
+                                                        aria-labelledby="headingOne" data-bs-parent="#accordionExample"
+                                                        style="">
                                                         <div class="accordion-body">
                                                             <div class="navbar-nav">
-                                                                @foreach ($category->subCategory as $subCategory)
-                                                                    <a href="#"
-                                                                        class="nav-item nav-link">{{ $subCategory->name }}</a>
+                                                                @foreach ($category->sub_category as $subCategory)
+                                                                    <a href="{{ route('user.shop', [$category->slug, $subCategory->slug]) }}"
+                                                                        class="nav-item nav-link {{ $subCatSelected == $subCategory->id ? 'text-primary' : '' }}">{{ $subCategory->name }}</a>
                                                                 @endforeach
                                                             </div>
                                                         </div>
@@ -69,9 +71,10 @@
                                 @if ($brands->isNotEmpty())
                                     @foreach ($brands as $brand)
                                         <div class="form-check mb-2">
-                                            <input class="form-check-input" name="brand[]" type="checkbox"
+                                            <input {{ in_array($brand->id, $brandsArray) ? 'checked' : '' }}
+                                                class="form-check-input brand-label" name="brand[]" type="checkbox"
                                                 value="{{ $brand->id }}" id="brand-{{ $brand->id }}">
-                                            <label class="form-check-label" for="flexCheckDefault">
+                                            <label class="form-check-label" for="brand-{{ $brand->id }}">
                                                 {{ $brand->name }}
                                             </label>
                                         </div>
@@ -86,30 +89,7 @@
 
                         <div class="card">
                             <div class="card-body">
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">
-                                        $0-$100
-                                    </label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
-                                    <label class="form-check-label" for="flexCheckChecked">
-                                        $100-$200
-                                    </label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
-                                    <label class="form-check-label" for="flexCheckChecked">
-                                        $200-$500
-                                    </label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
-                                    <label class="form-check-label" for="flexCheckChecked">
-                                        $500+
-                                    </label>
-                                </div>
+                                <input type="text" class="js-range-slider" name="my_range" value="" />
                             </div>
                         </div>
                     </div>
@@ -118,7 +98,12 @@
                             <div class="col-12 pb-1">
                                 <div class="d-flex align-items-center justify-content-end mb-4">
                                     <div class="ml-2">
-                                        <div class="btn-group">
+                                        <select name="sort" id="sort" class="form-control">
+                                            <option value="latest">Latest</option>
+                                            <option value="price_asc">Price High</option>
+                                            <option value="price_desc">Price Low</option>
+                                        </select>
+                                        {{-- <div class="btn-group">
                                             <button type="button" class="btn btn-sm btn-light dropdown-toggle"
                                                 data-bs-toggle="dropdown">Sorting</button>
                                             <div class="dropdown-menu dropdown-menu-right">
@@ -126,7 +111,7 @@
                                                 <a class="dropdown-item" href="#">Price High</a>
                                                 <a class="dropdown-item" href="#">Price Low</a>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
                             </div>
@@ -138,24 +123,26 @@
                                     <div class="col-md-4">
                                         <div class="card product-card">
                                             <div class="product-image position-relative">
-                                                <a href="#" class="product-img">
+                                                <a href="{{ route('user.product', $product->slug) }}" class="product-img">
                                                     @if (!empty($productImage->image))
                                                         <img src="{{ asset('uploads/product/small/' . $productImage->image) }}"
-                                                            class="img-thumbnail" width="50" />
+                                                            class="card-img-top img-thumbnail" width="50" />
                                                     @else
-                                                        <img src="{{ asset('uploads/product/default_image150x150.jpg') }}"
-                                                            class="img-thumbnail" width="50" />
+                                                        <img src="{{ asset('uploads/product/default_image150x150.png') }}"
+                                                            class="card-img-top img-thumbnail" width="50" />
                                                     @endif
                                                 </a>
                                                 <a class="whishlist" href="222"><i class="far fa-heart"></i></a>
                                                 <div class="product-action">
-                                                    <a class="btn btn-dark" href="#">
+                                                    <a class="btn btn-dark" onclick="addToCart({{ $product->id }})"
+                                                        href="javascript:void(0);">
                                                         <i class="fa fa-shopping-cart"></i> Add To Cart
                                                     </a>
                                                 </div>
                                             </div>
                                             <div class="card-body text-center mt-3">
-                                                <a class="h6 link" href="product.php">{{ $product->title }}</a>
+                                                <a class="h6 link"
+                                                    href="{{ route('user.product', $product->slug) }}">{{ $product->title }}</a>
                                                 <div class="price mt-2">
                                                     <span class="h5"><strong>${{ $product->price }}</strong></span>
                                                     @if ($product->compare_price > 0)
@@ -169,20 +156,7 @@
                                 @endforeach
                             @endif
                             <div class="col-md-12 pt-5">
-                                <nav aria-label="Page navigation example">
-                                    <ul class="pagination justify-content-end">
-                                        <li class="page-item disabled">
-                                            <a class="page-link" href="#" tabindex="-1"
-                                                aria-disabled="true">Previous</a>
-                                        </li>
-                                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">Next</a>
-                                        </li>
-                                    </ul>
-                                </nav>
+                                {{ $products->links() }}
                             </div>
                         </div>
                     </div>
@@ -190,4 +164,47 @@
             </div>
         </section>
     </main>
+@endsection
+
+@section('customJS')
+    <script>
+        //
+        $(".js-range-slider").ionRangeSlider({
+            type: "double",
+            min: 0,
+            max: 1500,
+            from: {{ $minPrice }},
+            step: 10,
+            to: {{ $maxPrice }},
+            skin: "round",
+            max_postfix: "+",
+            prefix: "$",
+            onFinish: function(data) {
+                applyFilters();
+            }
+        });
+
+        var slider = $(".js-range-slider").data("ionRangeSlider");
+
+        //
+        $('.brand-label').change(function() {
+            applyFilters();
+        });
+
+        function applyFilters() {
+            brands = [];
+            $('.brand-label').each(function() {
+                if ($(this).is(':checked')) {
+                    brands.push($(this).val());
+                }
+            });
+            var url = '{{ url()->current() }}?';
+            url += 'min_price=' + slider.result.from + '&max_price=' + slider.result.to;
+
+            if (brands.length > 0) {
+                url += '&brand=' + brands.toString();
+            }
+            window.location.href = url;
+        }
+    </script>
 @endsection

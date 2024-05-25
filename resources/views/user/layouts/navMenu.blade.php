@@ -13,6 +13,8 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li><a class="nav-link" href="{{ route('user.index') }}"">Home</a></li>
+                    <li><a class="nav-link" href="{{ route('user.shop') }}"">Shop</a></li>
                     <!-- <li class="nav-item">
       <a class="nav-link active" aria-current="page" href="index.php" title="Products">Home</a>
     </li> -->
@@ -23,9 +25,9 @@
                                     aria-expanded="false">
                                     {{ $category->name }}
                                 </button>
-                                @if ($category->subCategory->isNotEmpty())
+                                @if ($category->sub_category->isNotEmpty())
                                     <ul class="dropdown-menu dropdown-menu-dark">
-                                        @foreach ($category->subCategory as $subCat)
+                                        @foreach ($category->sub_category as $subCat)
                                             <li><a class="dropdown-item nav-link" href="#">{{ $subCat->name }}</a>
                                             </li>
                                         @endforeach
@@ -33,6 +35,7 @@
                                 @endif
                             </li>
                         @endforeach
+
                     @endif
                     {{-- <li class="nav-item dropdown">
                         <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown"
@@ -79,8 +82,8 @@
                 </ul>
             </div>
             <div class="right-nav py-0">
-                <a href="cart.php" class="ml-3 d-flex pt-2">
-                    <i class="fas fa-shopping-cart text-primary"></i>
+                <a href="{{ route('cart.index') }}" class="ml-3 d-flex pt-2">
+                    <i class="fas fa-shopping-cart text-primary">&nbsp; {{ Cart::count() }}</i>
                 </a>
             </div>
         </nav>

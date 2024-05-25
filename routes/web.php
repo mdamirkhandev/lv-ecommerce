@@ -3,25 +3,27 @@
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\user\ShopController;
 use App\Http\Controllers\admin\HomeController;
-use App\Http\Controllers\admin\CategoryController;
-use App\Http\Controllers\admin\AdminLoginController;
 use App\Http\Controllers\admin\BrandController;
 use App\Http\Controllers\admin\ProductController;
+use App\Http\Controllers\admin\CategoryController;
+use App\Http\Controllers\admin\AdminLoginController;
+use App\Http\Controllers\admin\TempImagesController;
+use App\Http\Controllers\admin\SubCategoryController;
 use App\Http\Controllers\admin\ProductImageController;
 use App\Http\Controllers\admin\ProductSubCatController;
-use App\Http\Controllers\admin\SubCategoryController;
-use App\Http\Controllers\admin\TempImagesController;
 use App\Http\Controllers\user\HomeController as UserHomeController;
-use App\Http\Controllers\user\ShopController;
 
 // Route::get('/', function () {
 //     return view('welcome');
 // });
 
 Route::get('/', [UserHomeController::class, 'index'])->name('user.index');
-Route::get('/shop', [ShopController::class, 'index'])->name('user.shop');
-
+Route::get('/shop/{catSlug?}/{subCatSlug?}', [ShopController::class, 'index'])->name('user.shop');
+Route::get('/product/{slug}', [ShopController::class, 'product'])->name('user.product');
+Route::resource('/cart', CartController::class);
 Route::group(['prefix' => 'admin'], function () {
     //guest
     Route::group(['middleware' => 'admin.guest'], function () {

@@ -220,6 +220,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h2 class="h4 mb-3">Related product</h2>
+                                <div class="mb-3">
+                                    <select name="is_related" id="is_related" class="form-control">
+                                        <option {{ $product->is_related == 'No' ? 'selected' : '' }} value="No">No
+                                        </option>
+                                        <option {{ $product->is_related == 'Yes' ? 'selected' : '' }} value="Yes">Yes
+                                        </option>
+                                    </select>
+                                    <p class="error"></p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="pb-5 pt-3">

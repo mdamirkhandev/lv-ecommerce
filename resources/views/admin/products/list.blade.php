@@ -64,7 +64,7 @@
                                                 <img src="{{ asset('uploads/product/small/' . $productImage->image) }}"
                                                     class="img-thumbnail" width="50" />
                                             @else
-                                                <img src="{{ asset('uploads/product/default_image150x150.jpg') }}"
+                                                <img src="{{ asset('uploads/product/default_image150x150.png') }}"
                                                     class="img-thumbnail" width="50" />
                                             @endif
                                         </td>
