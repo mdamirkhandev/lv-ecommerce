@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
-class HomeController extends Controller
+class UserHomeController extends Controller
 {
     //
     public function index()
@@ -23,5 +23,17 @@ class HomeController extends Controller
             ->get();
 
         return view('user.index', compact('featured_Products', 'latest_Products'));
+    }
+
+    public function myAccount()
+    {
+        return view('user.my-account');
+    }
+
+    public function logout()
+    {
+        auth()->logout();
+        session()->flash('success', 'Logout Successfully');
+        return redirect()->route('login');
     }
 }

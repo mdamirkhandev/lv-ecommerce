@@ -72,6 +72,8 @@ class CartController extends Controller
                 'price' => $product->price,
                 'options' => ['productImage' => $product->product_images ? $product->product_images->first() : '']
             ]);
+            $message = 'Product added to the cart successfully';
+            session()->flash('success', $message);
             $status = true;
             $message = 'Product added in cart';
         }
@@ -101,16 +103,61 @@ class CartController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        //
+        $rowId = $request->rowId;
+        $qty = $request->qty;
+        //check stock avilability
+        $itemInfo = Cart::get($rowId);
+        $product = Product::find($itemInfo->id);
+        if ($product->track_qty == 'Yes') {
+            if ($qty <= $product->qty) {
+                Cart::update($rowId, $qty);
+                $message = 'Cart updated successfully';
+                session()->flash('success', $message);
+                return response()->json(
+                    [
+                        'status' => true,
+                        'message' => $message
+                    ]
+                );
+            } else {
+                $message = 'Requested qty:-' . $qty . ' is not available 😐';
+                session()->flash('error', $message);
+                return response()->json(
+                    [
+                        'status' => false,
+                        'message' => $message
+                    ]
+                );
+            }
+        } else {
+            Cart::update($rowId, $qty);
+            $message = 'Cart updated successfully';
+            session()->flash('success', $message);
+            return response()->json(
+                [
+                    'status' => true,
+                    'message' => $message
+                ]
+            );
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+        $rowId = $request->rowId;
+        Cart::remove($rowId);
+        $message = 'Product deleted from cart and cart updated successfully';
+        session()->flash('success', $message);
+        return response()->json(
+            [
+                'status' => true,
+                'message' => $message
+            ]
+        );
     }
 }
