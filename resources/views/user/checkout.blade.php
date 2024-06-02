@@ -29,14 +29,16 @@
                                         <div class="col-md-12">
                                             <div class="mb-3">
                                                 <input type="text" name="first_name" id="first_name" class="form-control"
-                                                    placeholder="First Name">
+                                                    placeholder="First Name"
+                                                    value="{{ !empty($customerDetails) ? $customerDetails->first_name : '' }}">
                                                 <p></p>
                                             </div>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="mb-3">
                                                 <input type="text" name="last_name" id="last_name" class="form-control"
-                                                    placeholder="Last Name">
+                                                    placeholder="Last Name"
+                                                    value="{{ !empty($customerDetails) ? $customerDetails->last_name : '' }}">
                                                 <p></p>
                                             </div>
                                         </div>
@@ -44,18 +46,28 @@
                                         <div class="col-md-12">
                                             <div class="mb-3">
                                                 <input type="text" name="email" id="email" class="form-control"
-                                                    placeholder="Email">
+                                                    placeholder="Email"
+                                                    value="{{ !empty($customerDetails) ? $customerDetails->email : '' }}">
                                                 <p></p>
                                             </div>
                                         </div>
-
+                                        <div class="col-md-12">
+                                            <div class="mb-3">
+                                                <input type="number" name="mobile" id="mobile" class="form-control"
+                                                    placeholder="Mobile No."
+                                                    value="{{ !empty($customerDetails) ? $customerDetails->mobile : '' }}">
+                                                <p></p>
+                                            </div>
+                                        </div>
                                         <div class="col-md-12">
                                             <div class="mb-3">
                                                 <select name="country" id="country" class="form-control">
                                                     <option value="">Select a Country</option>
                                                     @if (!empty($countries))
                                                         @foreach ($countries as $country)
-                                                            <option value="{{ $country->id }}">{{ $country->name }}
+                                                            <option
+                                                                {{ !empty($customerDetails && $customerDetails->country_id == $country->id) ? 'selected' : '' }}
+                                                                value="{{ $country->id }}">{{ $country->name }}
                                                             </option>
                                                         @endforeach
                                                     @endif
@@ -66,7 +78,7 @@
 
                                         <div class="col-md-12">
                                             <div class="mb-3">
-                                                <textarea name="address" id="address" cols="30" rows="3" placeholder="Address" class="form-control"></textarea>
+                                                <textarea name="address" id="address" cols="30" rows="3" placeholder="Full Address" class="form-control">{{ !empty($customerDetails) ? $customerDetails->address : '' }}</textarea>
                                                 <p></p>
                                             </div>
                                         </div>
@@ -74,14 +86,16 @@
                                         <div class="col-md-12">
                                             <div class="mb-3">
                                                 <input type="text" name="apartment" id="apartment" class="form-control"
-                                                    placeholder="Apartment, suite, unit, etc. (optional)">
+                                                    placeholder="Apartment, suite, unit, etc. (optional)"
+                                                    value="{{ !empty($customerDetails) ? $customerDetails->apartment : '' }}">
                                             </div>
                                         </div>
 
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <input type="text" name="city" id="city" class="form-control"
-                                                    placeholder="City">
+                                                    placeholder="City"
+                                                    value="{{ !empty($customerDetails) ? $customerDetails->city : '' }}">
                                                 <p></p>
                                             </div>
                                         </div>
@@ -89,7 +103,8 @@
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <input type="text" name="state" id="state" class="form-control"
-                                                    placeholder="State">
+                                                    placeholder="State"
+                                                    value="{{ !empty($customerDetails) ? $customerDetails->state : '' }}">
                                                 <p></p>
                                             </div>
                                         </div>
@@ -97,19 +112,11 @@
                                         <div class="col-md-4">
                                             <div class="mb-3">
                                                 <input type="number" name="zip" id="zip" class="form-control"
-                                                    placeholder="Zip">
+                                                    placeholder="Zip"
+                                                    value="{{ !empty($customerDetails) ? $customerDetails->zip : '' }}">
                                                 <p></p>
                                             </div>
                                         </div>
-
-                                        <div class="col-md-12">
-                                            <div class="mb-3">
-                                                <input type="number" name="mobile" id="mobile" class="form-control"
-                                                    placeholder="Mobile No.">
-                                                <p></p>
-                                            </div>
-                                        </div>
-
 
                                         <div class="col-md-12">
                                             <div class="mb-3">
@@ -215,37 +222,36 @@
         $('#orderForm').on('submit', function(e) {
             e.preventDefault();
             let form = $(this);
+            $('button[type=submit]').prop('disabled', true);
             $.ajax({
                 url: "{{ route('user.orderSubmit') }}",
                 type: 'post',
                 data: form.serialize(),
                 dataType: 'json',
-                success: function(response) {
-                    var errors = response['errors'];
-                    console.log(errors);
-                    // if (response.status == 200) {
-                    //     alert(response.message);
-                    //     window.location.href = response.redirect;
-                    // } else {
-                    //     alert(response.message);
-                    // }
-                    if (errors) {
-                        $.each(errors, function(key, value) {
-                            $('#' + key).addClass('is-invalid')
-                                .siblings('p')
-                                .addClass('invalid-feedback')
-                                .html(value)
-                        });
+                success: function(res) {
+                    var errors = res['errors'];
+                    $('button[type=submit]').prop('disabled', false);
+                    if (res.status == false) {
+                        if (errors) {
+                            $.each(errors, function(key, value) {
+                                $('#' + key).addClass('is-invalid')
+                                    .siblings('p')
+                                    .addClass('invalid-feedback')
+                                    .html(value)
+                            });
+                        } else {
+                            //remove class
+                            $.each(errors, function(key, value) {
+                                $('#' + key).removeClass('is-invalid')
+                                    .siblings('p')
+                                    .removeClass('invalid-feedback')
+                                    .html('')
+                            });
+                        }
                     } else {
-                        //remove class
-                        $.each(errors, function(key, value) {
-                            $('#' + key).removeClass('is-invalid')
-                                .siblings('p')
-                                .removeClass('invalid-feedback')
-                                .html('')
-                        });
-                        location.reload();
+                        window.location.href = "{{ url('/thankyou/') }}/" + res.orderID;
                     }
+
                 }
             });
         });

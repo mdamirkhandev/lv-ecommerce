@@ -24,7 +24,9 @@ Route::get('/product/{slug}', [ShopController::class, 'product'])->name('user.pr
 Route::resource('/cart', CartController::class);
 Route::post('/update-cart', [CartController::class, 'update'])->name('updateCart');
 Route::post('/remove-from-cart', [CartController::class, 'destroy'])->name('removeFromCart');
+
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('user.checkout');
+Route::get('/thankyou/{order_id}', [CheckoutController::class, 'thankyou'])->name('user.thankyou');
 
 Route::post('/proceed-order', [CheckoutController::class, 'orderSubmit'])->name('user.orderSubmit');
 //user routes
