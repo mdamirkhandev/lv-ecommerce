@@ -76,7 +76,7 @@ class CategoryController extends Controller
                 $category->save();
             }
 
-            session()->flash('success', 'Category Added Successfully');
+            flash('Category Added successfully', 'success');
 
             return response()->json([
                 'status' => true,
@@ -120,7 +120,7 @@ class CategoryController extends Controller
         $category = Category::find($id);
 
         if (empty($category)) {
-            session()->flash('error', 'Category not found');
+            flash('Category not found', 'error');
             return response()->json([
                 'status' => false,
                 'notFound' => true,
@@ -151,9 +151,9 @@ class CategoryController extends Controller
                 File::copy($sPath, $dPath);
 
                 $nPath = public_path() . '/uploads/category/thumb/' . $newImageName;
+
                 $manager = new ImageManager(Driver::class);
                 $image = $manager->read($dPath);
-                // crop the best fitting 5:3 (600x360) ratio and resize to 600x360 pixel
                 $image->cover(450, 600);
                 $image->toPng()->save($nPath);
 
@@ -163,7 +163,7 @@ class CategoryController extends Controller
                 File::delete(public_path() . '/uploads/category/' . $oldImage);
             }
 
-            session()->flash('success', 'Category Updated Successfully');
+            flash('Category Updated successfully', 'success');
 
             return response()->json([
                 'status' => true,
@@ -185,7 +185,7 @@ class CategoryController extends Controller
         $category = Category::find($id);
 
         if (empty($category)) {
-            session()->flash('error', 'Category Not found');
+            flash('Category Not found', 'error');
             return response()->json([
                 'status' => true,
                 'message' => 'Category Not found'
@@ -196,7 +196,7 @@ class CategoryController extends Controller
 
         $category->delete();
 
-        session()->flash('success', 'Category Deleted Successfully');
+        flash('Category Deleted Successfully', 'success');
 
         return response()->json([
             'status' => true,

@@ -73,7 +73,7 @@ class CartController extends Controller
                 'options' => ['productImage' => $product->product_images ? $product->product_images->first() : '']
             ]);
             $message = 'Product added to the cart successfully';
-            session()->flash('success', $message);
+            flash($message, 'success');
             $status = true;
             $message = 'Product added in cart';
         }
@@ -114,7 +114,7 @@ class CartController extends Controller
             if ($qty <= $product->qty) {
                 Cart::update($rowId, $qty);
                 $message = 'Cart updated successfully';
-                session()->flash('success', $message);
+                flash($message, 'success');
                 return response()->json(
                     [
                         'status' => true,
@@ -123,7 +123,7 @@ class CartController extends Controller
                 );
             } else {
                 $message = 'Requested qty:-' . $qty . ' is not available 😐';
-                session()->flash('error', $message);
+                flash($message, 'error');
                 return response()->json(
                     [
                         'status' => false,
@@ -134,7 +134,7 @@ class CartController extends Controller
         } else {
             Cart::update($rowId, $qty);
             $message = 'Cart updated successfully';
-            session()->flash('success', $message);
+            flash($message, 'success');
             return response()->json(
                 [
                     'status' => true,
@@ -152,7 +152,7 @@ class CartController extends Controller
         $rowId = $request->rowId;
         Cart::remove($rowId);
         $message = 'Product deleted from cart and cart updated successfully';
-        session()->flash('success', $message);
+        flash($message, 'success');
         return response()->json(
             [
                 'status' => true,

@@ -50,7 +50,7 @@ class BrandController extends Controller
             $brand->status = $request->status;
             $brand->save();
 
-            session()->flash('success', 'Brand Added Successfully');
+            flash('Brand Added successfully', 'success');
 
             return response()->json([
                 'status' => true,
@@ -79,7 +79,7 @@ class BrandController extends Controller
     {
         $brand = Brand::find($id);
         if (empty($brand)) {
-            session()->flash('error', 'Brand not Found !!');
+            flash('Brand not Found !!', 'error');
             return redirect()->route('brands.index');
         }
         return view('admin.brands.edit', compact('brand'));
@@ -93,7 +93,7 @@ class BrandController extends Controller
         $brand = Brand::find($id);
 
         if (empty($brand)) {
-            session()->flash('error', 'Brand not Found !!');
+            flash('Brand not Found !!', 'error');
             return response()->json([
                 'status' => false,
                 'notFound' => true
@@ -111,7 +111,7 @@ class BrandController extends Controller
             $brand->status = $request->status;
             $brand->save();
 
-            session()->flash('success', 'Brand Updated Successfully');
+            flash('Brand Updated successfully', 'success');
 
             return response()->json([
                 'status' => true,
@@ -133,7 +133,7 @@ class BrandController extends Controller
         $brand = Brand::find($id);
 
         if (empty($brand)) {
-            session()->flash('error', 'Brand Not found');
+            flash('Brand Not found', 'error');
             return response()->json([
                 'status' => true,
                 'message' => 'Brand Not found'
@@ -142,7 +142,7 @@ class BrandController extends Controller
 
         $brand->delete();
 
-        session()->flash('success', 'Brand Deleted Successfully');
+        flash('Brand Deleted successfully', 'success');
 
         return response()->json([
             'status' => true,

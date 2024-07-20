@@ -40,6 +40,8 @@ Route::group(['prefix' => 'user'], function () {
     Route::group(['middleware' => 'auth'], function () {
         Route::get('/home', [UserHomeController::class, 'home'])->name('user.home');
         Route::get('/my-account', [UserHomeController::class, 'myAccount'])->name('user.profile');
+        Route::get('/my-order', [UserHomeController::class, 'myOrder'])->name('user.my-orders');
+        Route::get('/order-details/{orderid}', [UserHomeController::class, 'orderDetails'])->name('user.order-details');
         Route::get('/logout', [UserHomeController::class, 'logout'])->name('user.logout');
     });
 });

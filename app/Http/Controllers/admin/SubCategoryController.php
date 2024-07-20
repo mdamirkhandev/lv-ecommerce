@@ -58,7 +58,7 @@ class SubCategoryController extends Controller
             $subCategory->category_id = $request->category;
             $subCategory->save();
 
-            session()->flash('success', 'Sub-Category Added Successfully');
+            flash('Sub-Category Added successfully', 'success');
 
             return response()->json([
                 'status' => true,
@@ -87,7 +87,7 @@ class SubCategoryController extends Controller
     {
         $subCategory = SubCategory::find($id);
         if (empty($subCategory)) {
-            session()->flash('error', 'Sub-Category not Found !!');
+            flash('Sub-Category not Found !!', 'error');
             return redirect()->route('sub-category.index');
         }
         $categories = Category::get();
@@ -102,7 +102,7 @@ class SubCategoryController extends Controller
         $subCategory = SubCategory::find($id);
 
         if (empty($subCategory)) {
-            session()->flash('error', 'Sub-Category not Found !!');
+            flash('Sub-Category not Found !!', 'error');
             return response()->json([
                 'status' => false,
                 'notFound' => true
@@ -125,7 +125,7 @@ class SubCategoryController extends Controller
             $subCategory->category_id = $request->category;
             $subCategory->save();
 
-            session()->flash('success', 'Sub-Category Updated Successfully');
+            flash('Sub-Category Updated successfully', 'success');
 
             return response()->json([
                 'status' => true,
@@ -147,7 +147,7 @@ class SubCategoryController extends Controller
         $subCategory = Subcategory::find($id);
 
         if (empty($subCategory)) {
-            session()->flash('error', 'Sub-Category Not found');
+            flash('Sub-Category Not found', 'error');
             return response()->json([
                 'status' => true,
                 'message' => 'Sub-Category Not found'
@@ -156,7 +156,7 @@ class SubCategoryController extends Controller
 
         $subCategory->delete();
 
-        session()->flash('success', 'Sub-Category Deleted Successfully');
+        flash('Sub-Category Deleted successfully', 'success');
 
         return response()->json([
             'status' => true,

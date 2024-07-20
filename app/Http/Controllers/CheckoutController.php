@@ -109,7 +109,7 @@ class CheckoutController extends Controller
                 $orderItem->save();
             }
             Cart::destroy();
-            session()->flash('success', 'Order placed successfully');
+            flash('Order placed successfully', 'success');
 
             return response()->json([
                 'status' => true,

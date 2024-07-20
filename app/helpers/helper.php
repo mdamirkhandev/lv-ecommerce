@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Category;
+use App\Models\ProductImage;
 
 function getCategories()
 {
@@ -9,4 +10,11 @@ function getCategories()
         ->where('Status', 1)
         ->where('ShowMenu', 'Yes')
         ->get();
+}
+
+
+function getProductImage($productID)
+{
+
+    return ProductImage::where('product_id', $productID)->first();
 }

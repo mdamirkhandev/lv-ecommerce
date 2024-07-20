@@ -111,7 +111,7 @@ class ProductController extends Controller
                     $image->toPng()->save($dPath);
                 }
             }
-            session()->flash('success', 'Product Added Successfully');
+            flash('Product Added successfully', 'success');
 
             return response()->json([
                 'status' => true,
@@ -141,7 +141,7 @@ class ProductController extends Controller
         $product = Product::find($id);
 
         if (empty($product)) {
-            return redirect()->route('products.index')->with('error', 'Product Not Found');
+            return redirect()->route('products.index')->with('error', 'Product Not found', 'error');
         }
 
         $categories = Category::orderBy('name')->get();
@@ -195,7 +195,7 @@ class ProductController extends Controller
             $product->is_featured = $request->is_featured;
             $product->save();
 
-            session()->flash('success', 'Product Updated Successfully');
+            flash('Product Updated successfully', 'success');
 
             return response()->json([
                 'status' => true,
@@ -217,7 +217,7 @@ class ProductController extends Controller
         $product = Product::find($id);
 
         if (empty($product)) {
-            session()->flash('error', 'Product Not found');
+            flash('Product Not found', 'error');
             return response()->json([
                 'status' => false,
                 'notFound' => true,
@@ -235,7 +235,7 @@ class ProductController extends Controller
 
         $product->delete();
 
-        session()->flash('success', 'Product Deleted Successfully');
+        flash('Product Deleted successfully', 'success');
 
         return response()->json([
             'status' => true,

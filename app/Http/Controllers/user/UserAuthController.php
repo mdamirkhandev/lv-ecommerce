@@ -24,7 +24,7 @@ class UserAuthController extends Controller
             // }
             return redirect()->route('user.index');
         }
-        session()->flash('error', 'Either Email / Password Invalid !!');
+        flash('Either Email / Password Invalid !!', 'error');
         return back()->withInput($request->only('email'));
     }
 }

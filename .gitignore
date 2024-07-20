@@ -4,6 +4,7 @@
 /public/hot
 /public/temp
 /public/storage
+/public/uploads
 /public/admin-assets
 /storage/*.key
 /vendor
